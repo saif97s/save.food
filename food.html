@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طعام بخصم - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/">طعام بخصم</a>
+            </div>
+            <div class="nav-links">
+                <a href="/">الرئيسية</a>
+                <a href="/customer">العروض</a>
+                <a href="/restaurant/dashboard">لوحة المطعم</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="#" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="#" class="btn btn-primary">إنشاء حساب</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>عن الموقع</h3>
+                <p>نساعد في تقليل هدر الطعام عن طريق ربط المطاعم مع العملاء لبيع الوجبات الفائضة بأسعار مخفضة.</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="/">الرئيسية</a></li>
+                    <li><a href="/customer">تصفح العروض</a></li>
+                    <li><a href="#">كيف يعمل</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <p><i class="fas fa-envelope"></i> info@fooddiscount.com</p>
+                <p><i class="fas fa-phone"></i> +966 12 345 6789</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2023 طعام بخصم. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+{% extends "base.html" %}
+
+{% block title %}الرئيسية{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>أنقذ الطعام، وفر المال</h1>
+        <p>اشتر وجبات عالية الجودة من مطاعمك المفضلة بأسعار مخفضة وساعد في تقليل هدر الطعام.</p>
+        <a href="/customer" class="btn btn-primary btn-large">تصفح العروض الآن</a>
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='img/hero-food.png') }}" alt="وجبات بخصم">
+    </div>
+</section>
+
+<section class="how-it-works">
+    <h2>كيف يعمل البرنامج؟</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-icon"><i class="fas fa-store"></i></div>
+            <h3>المطاعم تضيف وجباتها الفائضة</h3>
+            <p>تقوم المطاعم بإضافة الوجبات التي لديها فائض منها بأسعار مخفضة.</p>
+        </div>
+        <div class="step">
+            <div class="step-icon"><i class="fas fa-search"></i></div>
+            <h3>العملاء يكتشفون العروض القريبة</h3>
+            <p>يمكنك تصفح العروض المتاحة في مطاعم قريبة منك.</p>
+        </div>
+        <div class="step">
+            <div class="step-icon"><i class="fas fa-shopping-bag"></i></div>
+            <h3>الحجز والاستلام</h3>
+            <p>احجز وجبتك وادفع إلكترونياً، ثم استلمها في الوقت المحدد.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}تصفح العروض{% endblock %}
+
+{% block content %}
+<section class="customer-view">
+    <div class="filters">
+        <div class="search-box">
+            <input type="text" placeholder="ابحث عن وجبة أو مطعم...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="filter-options">
+            <select id="time-filter">
+                <option value="">كل الأوقات</option>
+                <option value="breakfast">فطور</option>
+                <option value="lunch">غداء</option>
+                <option value="dinner">عشاء</option>
+            </select>
+            <select id="price-filter">
+                <option value="">كل الأسعار</option>
+                <option value="10">حتى 10 ريال</option>
+                <option value="20">حتى 20 ريال</option>
+                <option value="30">حتى 30 ريال</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="meals-container">
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="meals-list">
+            <h2>العروض المتاحة بالقرب منك</h2>
+            <div class="meals-grid" id="meals-grid">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- نموذج الحجز -->
+<div id="order-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>احجز وجبتك</h2>
+        <div class="meal-details">
+            <img id="modal-meal-image" src="" alt="صورة الوجبة">
+            <div class="meal-info">
+                <h3 id="modal-meal-name"></h3>
+                <p id="modal-meal-restaurant"></p>
+                <p id="modal-meal-price"></p>
+                <p id="modal-meal-time"></p>
+            </div>
+        </div>
+        <form id="order-form">
+            <div class="form-group">
+                <label for="name">الاسم الكامل</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">رقم الجوال</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div id="payment-element">
+                <!-- سيتم حقن عناصر الدفع من Stripe هنا -->
+            </div>
+            <button type="submit" class="btn btn-primary" id="submit-order">اكمل الحجز</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script>
+    // جلب العروض وعرضها
+    fetch('/api/meals')
+        .then(response => response.json())
+        .then(meals => {
+            const mealsGrid = document.getElementById('meals-grid');
+            meals.forEach(meal => {
+                const mealCard = document.createElement('div');
+                mealCard.className = 'meal-card';
+                mealCard.innerHTML = `
+                    <img src="${meal.image || '/static/img/default-food.jpg'}" alt="${meal.name}">
+                    <div class="meal-info">
+                        <h3>${meal.name}</h3>
+                        <p>${meal.restaurant}</p>
+                        <div class="meal-footer">
+                            <span class="price">${meal.price} ريال</span>
+                            <button class="btn btn-small" onclick="openOrderModal(${meal.id})">احجز الآن</button>
+                        </div>
+                    </div>
+                `;
+                mealsGrid.appendChild(mealCard);
+            });
+        });
+
+    function openOrderModal(mealId) {
+        // جلب تفاصيل الوجبة وعرضها في النموذج
+        fetch(`/api/meals/${mealId}`)
+            .then(response => response.json())
+            .then(meal => {
+                document.getElementById('modal-meal-name').textContent = meal.name;
+                document.getElementById('modal-meal-restaurant').textContent = meal.restaurant;
+                document.getElementById('modal-meal-price').textContent = `${meal.price} ريال`;
+                document.getElementById('modal-meal-time').textContent = `وقت الاستلام: ${meal.pickup_time}`;
+                document.getElementById('modal-meal-image').src = meal.image || '/static/img/default-food.jpg';
+                
+                // تهيئة Stripe Elements
+                const stripe = Stripe('your_stripe_public_key');
+                initializePayment(stripe, mealId, meal.price);
+                
+                document.getElementById('order-modal').style.display = 'block';
+            });
+    }
+</script>
+{% endblock %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="review-container">
+    <h2>قيم تجربتك</h2>
+    <div class="order-details">
+        <p>الوجبة: {{ order.meal.name }}</p>
+        <p>المطعم: {{ order.meal.restaurant.name }}</p>
+        <p>تاريخ الطلب: {{ order.order_time.strftime('%Y-%m-%d') }}</p>
+    </div>
+    
+    <form id="review-form">
+        <div class="rating-stars">
+            <span class="star" data-value="1"><i class="far fa-star"></i></span>
+            <span class="star" data-value="2"><i class="far fa-star"></i></span>
+            <span class="star" data-value="3"><i class="far fa-star"></i></span>
+            <span class="star" data-value="4"><i class="far fa-star"></i></span>
+            <span class="star" data-value="5"><i class="far fa-star"></i></span>
+            <input type="hidden" id="rating-value" name="rating" value="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="comment">تعليقك (اختياري)</label>
+            <textarea id="comment" name="comment" rows="4"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">إرسال التقييم</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // تفعيل النجوم
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            document.getElementById('rating-value').value = value;
+            
+            // تحديث مظهر النجوم
+            document.querySelectorAll('.star').forEach((s, idx) => {
+                if (idx < value) {
+                    s.innerHTML = '<i class="fas fa-star"></i>';
+                    s.style.color = '#FFD700';
+                } else {
+                    s.innerHTML = '<i class="far fa-star"></i>';
+                    s.style.color = '#ccc';
+                }
+            });
+        });
+    });
+    
+    // إرسال التقييم
+    document.getElementById('review-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const review = {
+            order_id: {{ order.id }},
+            rating: document.getElementById('rating-value').value,
+            comment: document.getElementById('comment').value
+        };
+        
+        fetch('/api/submit-review', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(review)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('شكراً لتقييمك!');
+                window.location.href = '/orders';
+            }
+        });
+    });
+</script>
+{% endblock %}
